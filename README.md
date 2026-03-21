@@ -278,3 +278,77 @@ npm run frontend
 **Market shows no data** — Switch to Simulation mode in the sidebar toggle (market may be closed). Live data only works 9:15 AM – 3:30 PM IST on weekdays.
 
 **Vite JSX error** — Make sure all files containing JSX use the `.jsx` extension, not `.js`.
+
+---
+
+## Deploying to Production
+
+### Architecture
+- **Frontend** → Vercel (auto-deploy from GitHub)
+- **Backend** → Render.com free tier (always-on Node server)
+- **Database** → MongoDB Atlas (already configured)
+
+---
+
+### Step 1 — Deploy Backend on Render
+
+1. Go to [render.com](https://render.com) → New → **Web Service**
+2. Connect your GitHub repo
+3. Set these fields:
+   - **Root Directory:** `backend`
+   - **Build Command:** `npm install`
+   - **Start Command:** `node src/index.js`
+   - **Environment:** `Node`
+4. Add **Environment Variables** (do NOT put these in .env on GitHub):
+   ```
+   MONGO_URI       = your MongoDB Atlas URI
+   JWT_SECRET      = a strong random secret (openssl rand -hex 32)
+   FRONTEND_URL    = https://your-app.vercel.app   ← add after Vercel deploy
+   PORT            = 10000
+   ```
+5. Deploy — copy the Render URL e.g. `https://alphametrics-api.onrender.com`
+
+---
+
+### Step 2 — Deploy Frontend on Vercel
+
+1. Go to [vercel.com](https://vercel.com) → New Project → Import GitHub repo
+2. Vercel auto-detects settings from `vercel.json` — no changes needed
+3. Add **Environment Variable** in Vercel dashboard:
+   ```
+   VITE_API_URL = https://alphametrics-api.onrender.com
+   ```
+4. Deploy
+
+---
+
+### Step 3 — Connect them
+
+1. Copy your Vercel URL e.g. `https://alphametrics.vercel.app`
+2. Go back to Render → your backend service → **Environment** tab
+3. Set `FRONTEND_URL = https://alphametrics.vercel.app`
+4. Click **Save** — Render redeploys automatically
+
+---
+
+### Step 4 — Update frontend API base URL
+
+In `frontend/src/api/index.js`, change:
+```js
+const BASE = "/api";
+```
+to:
+```js
+const BASE = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : "/api";
+```
+This makes it use `localhost:5000` locally and your Render URL in production.
+
+---
+
+### Security checklist before going live
+- [ ] `backend/.env` is in `.gitignore` ✅
+- [ ] All secrets set as environment variables on Render, NOT in code
+- [ ] JWT_SECRET changed from the default placeholder
+- [ ] MongoDB Atlas Network Access includes `0.0.0.0/0` (for Render's dynamic IPs)

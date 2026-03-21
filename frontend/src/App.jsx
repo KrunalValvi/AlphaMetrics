@@ -18,6 +18,7 @@ import AdminUsers     from "./pages/admin/AdminUsers.jsx";
 import AdminTrades    from "./pages/admin/AdminTrades.jsx";
 import AdminAnalytics from "./pages/admin/AdminAnalytics.jsx";
 import AdminSettings  from "./pages/admin/AdminSettings.jsx";
+import LandingPage from "./pages/LandingPage.jsx";
 
 const PrivateRoute = ({ children, adminOnly = false }) => {
   const { user, loading } = useAuth();
@@ -37,7 +38,8 @@ const PublicRoute = ({ children }) => {
 function AppRoutes() {
   return (
     <Routes>
-      <Route path="/"      element={<Navigate to="/login" replace />} />
+      {/* <Route path="/"      element={<Navigate to="/login" replace />} /> */}
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<PublicRoute><AuthPage /></PublicRoute>} />
 
       <Route path="/dashboard"       element={<PrivateRoute><Dashboard /></PrivateRoute>} />
@@ -57,7 +59,8 @@ function AppRoutes() {
       <Route path="/admin/analytics" element={<PrivateRoute adminOnly><AdminAnalytics /></PrivateRoute>} />
       <Route path="/admin/settings"  element={<PrivateRoute adminOnly><AdminSettings /></PrivateRoute>} />
 
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      {/* <Route path="*" element={<Navigate to="/login" replace />} /> */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

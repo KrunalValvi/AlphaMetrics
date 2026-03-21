@@ -10,11 +10,12 @@ dotenv.config();
 
 const DEMO_USERS = [
   { name: "Krunal Valvi",    email: "krunal@example.com",        password: "password123", role: "user",  balance: 1247832.50, trades: 47,  pnl: 247832.50,   status: "active",   watchlist: ["RELIANCE","TCS","HDFCBANK","INFY"] },
-  { name: "Shubham Bhimani", email: "priya@example.com",         password: "password123", role: "user",  balance: 876540.00,  trades: 32,  pnl: -123460.00,  status: "active",   watchlist: ["ICICIBANK","WIPRO"] },
-  { name: "Vraj Rajarapa",   email: "rahul@example.com",         password: "password123", role: "user",  balance: 1589200.00, trades: 89,  pnl: 589200.00,   status: "active",   watchlist: ["SBIN","TATAMOTORS"] },
-  { name: "Mayur Chavda",    email: "sneha@example.com",         password: "password123", role: "user",  balance: 543000.00,  trades: 12,  pnl: -457000.00,  status: "inactive", watchlist: [] },
-  { name: "Raj Kikani",      email: "vikram@example.com",        password: "password123", role: "user",  balance: 2134500.00, trades: 134, pnl: 1134500.00,  status: "active",   watchlist: ["MARUTI","BAJFINANCE"] },
-  { name: "Prit Pansuriya",  email: "kavya@example.com",         password: "password123", role: "user",  balance: 923400.00,  trades: 28,  pnl: -76600.00,   status: "active",   watchlist: ["SUNPHARMA"] },
+  { name: "Shubham Bhimani", email: "Shubham@example.com",         password: "password123", role: "user",  balance: 876540.00,  trades: 32,  pnl: -123460.00,  status: "active",   watchlist: ["ICICIBANK","WIPRO"] },
+  { name: "Vraj Rajarapa",   email: "Vraj@example.com",         password: "password123", role: "user",  balance: 1589200.00, trades: 89,  pnl: 589200.00,   status: "active",   watchlist: ["SBIN","TATAMOTORS"] },
+  { name: "Mayur Chavda",    email: "Mayur@example.com",         password: "password123", role: "user",  balance: 543000.00,  trades: 12,  pnl: -457000.00,  status: "inactive", watchlist: [] },
+  { name: "Raj Kikani",      email: "Raj@example.com",        password: "password123", role: "user",  balance: 2134500.00, trades: 134, pnl: 1134500.00,  status: "active",   watchlist: ["MARUTI","BAJFINANCE"] },
+  { name: "Prit Pansuriya",  email: "Prit@example.com",         password: "password123", role: "user",  balance: 923400.00,  trades: 28,  pnl: -76600.00,   status: "active",   watchlist: ["SUNPHARMA"] },
+  { name: "Krish Kachhadiya",  email: "Krish@example.com",         password: "password123", role: "user",  balance: 923400.00,  trades: 28,  pnl: -76600.00,   status: "active",   watchlist: ["SUNPHARMA"] },
   { name: "Admin",           email: "admin@alphametrics.in",     password: "admin123",    role: "admin", balance: 0,          trades: 0,   pnl: 0,           status: "active",   watchlist: [] },
 ];
 
