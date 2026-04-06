@@ -1,5 +1,6 @@
 import express    from "express";
 import cors       from "cors";
+import rateLimit from "express-rate-limit";
 import dotenv     from "dotenv";
 import mongoose   from "mongoose";
 
@@ -11,6 +12,7 @@ import watchlistRoutes from "./routes/watchlist.js";
 import adminRoutes     from "./routes/admin.js";
 import alertRoutes       from "./routes/alerts.js";
 import leaderboardRoutes from "./routes/leaderboard.js";
+import backtestRoutes   from "./routes/backtest.js";
 
 import Alert          from "./models/Alert.js";
 import yahooFinance   from "yahoo-finance2";
@@ -18,6 +20,24 @@ import yahooFinance   from "yahoo-finance2";
 dotenv.config();
 
 const app = express();
+
+// Rate limiter for auth routes — 10 requests per 15 minutes
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10,
+  message: { message: "Too many login/signup attempts. Please try again in 15 minutes." },
+  standardHeaders: false,
+  skip: (req) => req.method !== "POST", // Only count POST requests
+});
+
+// Selective middleware for auth routes only
+const applyAuthLimiter = (req, res, next) => {
+  if (req.path === "/login" || req.path === "/signup") {
+    authLimiter(req, res, next);
+  } else {
+    next();
+  }
+};
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -35,7 +55,7 @@ app.use(cors({
 }));
 app.use(express.json());
 
-app.use("/api/auth",      authRoutes);
+app.use("/api/auth", applyAuthLimiter, authRoutes);
 app.use("/api/stocks",    stockRoutes);
 app.use("/api/trades",    tradeRoutes);
 app.use("/api/portfolio", portfolioRoutes);
@@ -43,6 +63,7 @@ app.use("/api/watchlist", watchlistRoutes);
 app.use("/api/admin",     adminRoutes);
 app.use("/api/alerts",      alertRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
+app.use("/api/backtest",    backtestRoutes);
 
 app.get("/api/health", (_, res) => res.json({ status: "ok", time: new Date() }));
 
