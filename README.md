@@ -2,9 +2,16 @@
 
 A professional-grade paper trading simulator for Indian stock markets (NSE), built with **React + Vite** frontend and **Node.js + Express + MongoDB Atlas** backend. Real stock prices fetched live from **Yahoo Finance**.
 
+![React](https://img.shields.io/badge/React-18.3-20232a?style=flat-square&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-5.3-646CFF?style=flat-square&logo=vite&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=flat-square&logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-4.19-000000?style=flat-square&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB_Atlas-8.4-47A248?style=flat-square&logo=mongodb&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-9.0-black?style=flat-square&logo=jsonwebtokens&logoColor=white)
+
 ---
 
-## What's Inside
+## 🗂 What's Inside
 
 ### User Features
 | Feature | Description |
@@ -27,6 +34,7 @@ A professional-grade paper trading simulator for Indian stock markets (NSE), bui
 | User Management | View all users, activate/deactivate accounts |
 | All Trades | Full platform trade history with search and filters |
 | Analytics | Leaderboard, sector distribution, retention chart |
+| Admin Settings | Admin-level platform configuration |
 
 ### Smart Data Mode Toggle
 Switch between two modes anytime from the sidebar or Settings:
@@ -38,8 +46,9 @@ Switch between two modes anytime from the sidebar or Settings:
 ## Project Structure
 
 ```
-alphametrics-fullstack/
+alphametrics/
 ├── package.json                ← root — runs both frontend + backend together
+├── vercel.json                 ← Vercel deploy config (auto SPA rewrite)
 ├── backend/
 │   ├── package.json
 │   ├── .env                    ← MongoDB Atlas URI + JWT secret (edit this)
@@ -48,7 +57,7 @@ alphametrics-fullstack/
 │       ├── seed.js             ← Creates demo users in MongoDB
 │       ├── models/             ← User, Trade, Position, Alert, PnlSnapshot
 │       ├── routes/             ← auth, stocks, trades, portfolio, watchlist,
-│       │                          alerts, leaderboard, admin
+│       │                          alerts, leaderboard, backtest, admin
 │       └── middleware/         ← JWT auth guard
 └── frontend/
     ├── package.json
@@ -57,6 +66,7 @@ alphametrics-fullstack/
     └── src/
         ├── main.jsx
         ├── App.jsx             ← All routes defined here
+        ├── index.css           ← Global design system & tokens
         ├── api/index.js        ← All API calls in one place
         ├── context/
         │   └── AuthContext.jsx ← Auth, balance, watchlist, data mode state
@@ -66,6 +76,7 @@ alphametrics-fullstack/
         ├── components/         ← AppLayout, Sidebar, Topbar, BuySellModal
         └── pages/
             ├── AuthPage.jsx
+            ├── LandingPage.jsx
             ├── user/           ← Dashboard, Market, StockDetail, Portfolio,
             │                      Orders, Watchlist, Backtest, Leaderboard,
             │                      Alerts, UserSettings
@@ -113,10 +124,16 @@ The `/alphametrics` at the end is the database name — Atlas creates it automat
 ## Step 3 — Install All Dependencies
 
 ```bash
-# Run from the root alphametrics-fullstack/ folder
+# Run from the root alphametrics/ folder
 npm install
 npm install --prefix backend
 npm install --prefix frontend
+```
+
+Or use the shorthand script:
+
+```bash
+npm run install:all
 ```
 
 ---
@@ -134,11 +151,12 @@ Expected output:
 ✅ Connected to MongoDB
 🗑  Cleared existing users
    ✓ Created: krunal@example.com
-   ✓ Created: priya@example.com
-   ✓ Created: rahul@example.com
-   ✓ Created: sneha@example.com
-   ✓ Created: vikram@example.com
-   ✓ Created: kavya@example.com
+   ✓ Created: Shubham@example.com
+   ✓ Created: Vraj@example.com
+   ✓ Created: Mayur@example.com
+   ✓ Created: Raj@example.com
+   ✓ Created: Prit@example.com
+   ✓ Created: Krish@example.com
    ✓ Created: admin@alphametrics.in
 🌱 Seed complete! Demo accounts ready.
 ```
@@ -148,7 +166,7 @@ Expected output:
 ## Step 5 — Run the Project
 
 ```bash
-# From the root alphametrics-fullstack/ folder
+# From the root alphametrics/ folder
 npm run dev
 ```
 
@@ -165,9 +183,11 @@ Open **http://localhost:5173** in your browser.
 | Role  | Email | Password |
 |-------|-------|----------|
 | 👤 User | krunal@example.com | password123 |
-| 👤 User | priya@example.com | password123 |
-| 👤 User | rahul@example.com | password123 |
+| 👤 User | Shubham@example.com | password123 |
+| 👤 User | Vraj@example.com | password123 |
 | 🔑 Admin | admin@alphametrics.in | admin123 |
+
+> All user accounts use `password123`. Admin uses `admin123`.
 
 ---
 
@@ -185,7 +205,7 @@ Open **http://localhost:5173** in your browser.
 ### Stocks
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| GET | `/api/stocks` | User | All 15 NSE quotes (60s cache) |
+| GET | `/api/stocks` | User | All NSE quotes (60s cache) |
 | GET | `/api/stocks/:symbol` | User | Single stock quote |
 | GET | `/api/stocks/:symbol/history?period=3M` | User | Historical OHLC candles |
 
@@ -209,6 +229,11 @@ Open **http://localhost:5173** in your browser.
 | DELETE | `/api/alerts/:id` | User | Delete alert |
 | PATCH | `/api/alerts/:id/reset` | User | Re-arm triggered alert |
 
+### Backtesting
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | `/api/backtest` | User | Run strategy backtest — returns totalReturn, winRate, maxDrawdown, sharpeRatio |
+
 ### Leaderboard & Admin
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
@@ -224,13 +249,14 @@ Open **http://localhost:5173** in your browser.
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | React 18, Vite 5, React Router 6 |
-| Charts | Recharts |
-| Backend | Node.js 18+, Express 4 |
-| Database | MongoDB Atlas + Mongoose |
-| Auth | JWT (jsonwebtoken) + bcryptjs |
-| Stock Data | yahoo-finance2 (real NSE prices via `.NS` suffix) |
-| Monorepo | concurrently (single `npm run dev` command) |
+| Frontend | React 18.3, Vite 5.3, React Router 6.23 |
+| Charts | Recharts 2.12 |
+| Backend | Node.js 18+, Express 4.19 |
+| Database | MongoDB Atlas + Mongoose 8.4 |
+| Auth | JWT (jsonwebtoken 9.0) + bcryptjs 2.4 |
+| Rate Limiting | express-rate-limit 7.1 |
+| Stock Data | yahoo-finance2 2.11 (real NSE prices via `.NS` suffix) |
+| Monorepo | concurrently 8.2 (single `npm run dev` command) |
 
 ---
 
@@ -242,6 +268,8 @@ Open **http://localhost:5173** in your browser.
 
 **Equity curve** — The portfolio chart is built by replaying all of the user's actual trades day-by-day from MongoDB — not random data.
 
+**Backtesting** — The `/api/backtest` endpoint fetches historical OHLC data from Yahoo Finance, runs the selected strategy to generate buy/sell signals, simulates trades, and returns metrics: total return, win rate, max drawdown, and annualized Sharpe ratio.
+
 **Price alerts** — A `setInterval` on the backend checks all active alerts every 60 seconds against live Yahoo Finance prices and marks them as triggered when the target is hit.
 
 **JWT auth** — Tokens are stored in `localStorage` under `am_token` and sent as `Bearer` headers on every API request.
@@ -252,7 +280,7 @@ Open **http://localhost:5173** in your browser.
 
 ```bash
 # Install everything
-npm install && npm install --prefix backend && npm install --prefix frontend
+npm run install:all
 
 # Seed demo users (run from root)
 cd backend && node src/seed.js && cd ..
@@ -279,12 +307,14 @@ npm run frontend
 
 **Vite JSX error** — Make sure all files containing JSX use the `.jsx` extension, not `.js`.
 
+**Rate limit errors** — The backend uses `express-rate-limit`. If you're hitting limits during development, reduce your polling interval or restart the backend server.
+
 ---
 
 ## Deploying to Production
 
 ### Architecture
-- **Frontend** → Vercel (auto-deploy from GitHub)
+- **Frontend** → Vercel (auto-deploy from GitHub, `vercel.json` included)
 - **Backend** → Render.com free tier (always-on Node server)
 - **Database** → MongoDB Atlas (already configured)
 
