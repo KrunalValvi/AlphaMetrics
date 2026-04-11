@@ -45,9 +45,7 @@ export const tradesAPI = {
   exportCSV: () => {
     const token = localStorage.getItem("am_token");
     const link  = document.createElement("a");
-    link.href = `/api/trades/export`;
-    // Fetch with auth header then trigger download
-    fetch("/api/trades/export", { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${BASE}/trades/export`, { headers: { Authorization: `Bearer ${token}` } })
       .then((r) => r.blob())
       .then((blob) => {
         const url = URL.createObjectURL(blob);
